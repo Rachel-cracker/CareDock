@@ -37,17 +37,16 @@ function showNotification(message, isError) {
   document.body.appendChild(note);
   setTimeout(function () { if (note && note.parentNode) note.parentNode.removeChild(note); }, 3000);
 }
-
+//load the profile
 function loadUserProfile(toggleEl, emailEl, nameEl, saveBtn) {
   var token = getToken();
   if (!token) {
     window.location.href = "./login_register.html";
     return;
   }
-
-  // profile
   fetch(API_BASE + "/profile/me", { headers: authHeaders() })
     .then(function (res) {
+      //if the user is not authenticated, redirect to the login page
       if (res.status === 401) {
         localStorage.removeItem("token");
         window.location.href = "./login_register.html";
@@ -56,6 +55,7 @@ function loadUserProfile(toggleEl, emailEl, nameEl, saveBtn) {
       return res.json();
     })
     .then(function (profile) {
+      //if the profile is not found, return
       if (!profile) return;
       originalEmail = profile.email || "";
       originalFullName = profile.full_name || "";
@@ -63,7 +63,7 @@ function loadUserProfile(toggleEl, emailEl, nameEl, saveBtn) {
       nameEl.value = originalFullName;
     })
     .finally(function () {
-      // local setting
+      //the settings to allow the self-care reminder
       var saved = localStorage.getItem("selfCareAISupport");
       if (saved !== null) {
         originalSetting = (saved === "true");
@@ -85,7 +85,6 @@ function saveChanges(toggleEl, emailEl, nameEl, saveBtn) {
   // update profile only if changed
   var needsProfile = (emailEl.value !== originalEmail) || (nameEl.value !== originalFullName);
   var doProfile = Promise.resolve();
-
   if (needsProfile) {
     doProfile = fetch(API_BASE + "/profile/me", {
       method: "PATCH",
@@ -102,7 +101,6 @@ function saveChanges(toggleEl, emailEl, nameEl, saveBtn) {
       originalFullName = nameEl.value;
     });
   }
-
   doProfile.then(function () {
     // save setting
     originalSetting = toggleEl.checked;
@@ -112,7 +110,7 @@ function saveChanges(toggleEl, emailEl, nameEl, saveBtn) {
   });
 }
 
-// ===== 3) Wire-up =====
+//put functions together
 document.addEventListener("DOMContentLoaded", function () {
   var toggle = document.querySelector("#selfCareToggle");
   var saveButton = document.querySelector('button[class*="bg-primary"]');
@@ -120,10 +118,9 @@ document.addEventListener("DOMContentLoaded", function () {
   var emailInput = document.querySelector("#emailInput");
   var fullNameInput = document.querySelector("#fullNameInput");
 
-  // load profile + setting
+  //load profile + setting
   loadUserProfile(toggle, emailInput, fullNameInput, saveButton);
-
-  // change watchers
+  //when users make changes, enale the save button
   toggle.addEventListener("change", function () {
     updateSaveButton(saveButton, toggle, emailInput, fullNameInput);
   });
@@ -134,13 +131,13 @@ document.addEventListener("DOMContentLoaded", function () {
     updateSaveButton(saveButton, toggle, emailInput, fullNameInput);
   });
 
-  // save
+  //save the change
   saveButton.addEventListener("click", function () {
     if (!hasChanges(toggle, emailInput, fullNameInput)) return;
     saveChanges(toggle, emailInput, fullNameInput, saveButton);
   });
 
-  // cancel (revert UI)
+  //cancel the change
   cancelButton.addEventListener("click", function () {
     toggle.checked = originalSetting;
     emailInput.value = originalEmail;
