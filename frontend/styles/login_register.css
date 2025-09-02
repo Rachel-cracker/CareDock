@@ -3,14 +3,8 @@ body {
     background-color: #F6CEA5;
 }
 
-/* icon fallback */
-:where([class^="ri-"])::before {
-  content: "\f3c2";
-}
-
-/* left image panel */
+/* left panel */
 .auth-side {
-  background-image: url("../images/login-hero.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -99,6 +93,7 @@ body {
   left: 3px;
 }
 
+/* The following is written by cursor to fix bug */
 #login:checked ~ .switch-selection {
   transform: translateX(0);
 }
