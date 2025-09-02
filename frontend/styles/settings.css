@@ -1,8 +1,3 @@
-/* icons */
-:where([class^="ri-"])::before { 
-  content: "\f3c2"; 
-}
-
 /* toggle switch */
 .toggle-switch {
   position: relative;
