@@ -1,0 +1,71 @@
+/* icons */
+:where([class^="ri-"])::before { 
+  content: "\f3c2"; 
+}
+
+/* cards */
+.exercise-card { 
+}
+.exercise-card:hover {
+}
+
+/* exercise modal */
+.exercise-modal {
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.7); 
+  z-index: 50;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  opacity: 0; 
+  visibility: hidden; 
+}
+.exercise-modal.active { 
+  opacity: 1; 
+  visibility: visible; 
+}
+.modal-content {
+  background: white; 
+  border-radius: 16px; 
+  width: 90%; 
+  max-width: 600px; 
+  max-height: 80vh; 
+  overflow-y: auto;
+  transform: scale(0.9); 
+}
+.exercise-modal.active .modal-content { 
+  transform: scale(1); 
+}
+
+/* search modal */
+.search-overlay {
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.5); 
+  z-index: 40;
+  opacity: 0; 
+  visibility: hidden; 
+}
+.search-overlay.active { 
+  opacity: 1; 
+  visibility: visible; 
+}
+.search-modal {
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  background: white; 
+  border-radius: 16px; 
+  padding: 2rem; 
+  width: 90%; 
+  max-width: 600px; 
+  z-index: 50;
+  opacity: 0; 
+  visibility: hidden; 
+}
+.search-modal.active { 
+  opacity: 1; 
+  visibility: visible; 
+}

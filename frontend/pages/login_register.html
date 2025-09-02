@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - CareDock</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+
+  <!-- fonts and icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+
+  <!-- tailwind config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 
+            primary: "#E27759", 
+            secondary: "#BBC18A" 
+          },
+          borderRadius: {
+            "none": "0px",
+            "sm": "4px",
+            DEFAULT: "8px",
+            "md": "12px",
+            "lg": "16px",
+            "xl": "20px",
+            "2xl": "24px",
+            "3xl": "32px",
+            "full": "9999px",
+            "button": "8px"
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- page styles -->
+  <link rel="stylesheet" href="../styles/login_register.css" />
+</head>
+
+<body class="min-h-screen">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-[1200px] min-h-[600px] flex rounded-2xl shadow-2xl overflow-hidden">
+      <!-- left side -->
+      <div class="w-2/5 relative overflow-hidden auth-side">
+        <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+          <div class="text-center text-white p-8">
+            <h1 class="font-['Pacifico'] text-4xl mb-4">CareDock</h1>
+            <p class="text-lg font-light">
+              Empowering caregivers with compassion and support
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- right side -->
+      <div class="w-3/5 form-container p-8 flex flex-col items-center">
+        <!-- switch -->
+        <div class="form-switch mb-8">
+          <input
+            type="radio"
+            class="switch-input"
+            name="view"
+            id="login"
+            checked
+          />
+          <input
+            type="radio"
+            class="switch-input"
+            name="view"
+            id="register"
+          />
+          <label for="login" class="switch-label">Login</label>
+          <label for="register" class="switch-label">Register</label>
+          <span class="switch-selection"></span>
+        </div>
+        <!-- login form -->
+        <div id="loginForm" class="w-full max-w-md">
+          <form class="space-y-6">
+            <div>
+              <label class="block text-gray-700 mb-2">Email</label>
+              <div class="relative">
+                <input
+                  type="email"
+                  id="loginEmail"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none"
+                  placeholder="Enter your email"
+                />
+              </div>
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Password</label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="loginPassword"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none"
+                  placeholder="Enter your password"
+                />
+                <button type="button" class="absolute toggle-password">
+                  <i class="ri-eye-line text-gray-400"></i>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <label class="flex items-center">
+                <input type="checkbox" class="custom-checkbox mr-2" />
+                <span class="text-sm text-gray-600">Remember me</span>
+              </label>
+            </div>
+            <button
+              type="submit"
+              class="w-full py-3 px-4 bg-primary text-white rounded-button"
+            >
+              Login
+            </button>
+          </form>
+        </div>
+        <!-- register form -->
+        <div id="registerForm" class="w-full max-w-md hidden">
+          <form class="space-y-6">
+            <div>
+              <label class="block text-gray-700 mb-2">Full Name</label>
+              <input
+                type="text"
+                id="regFullName"
+                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none"
+                placeholder="Enter your full name"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Email</label>
+              <input
+                type="email"
+                id="regEmail"
+                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none"
+                placeholder="Enter your email"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Password</label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="regPassword"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none"
+                  placeholder="Create a password"
+                />
+                <button type="button" class="absolute toggle-password">
+                  <i class="ri-eye-line text-gray-400"></i>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Confirm Password</label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="regConfirmPassword"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary outline-none"
+                  placeholder="Confirm your password"
+                />
+                <button type="button" class="absolute toggle-password">
+                  <i class="ri-eye-line text-gray-400"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-start">
+              <input
+                type="checkbox"
+                class="custom-checkbox mt-1 mr-2"
+              />
+              <span class="text-sm text-gray-600">
+                I agree to the
+                <a href="#" class="text-secondary">Terms of Service</a>
+                and
+                <a href="#" class="text-secondary">Privacy Policy</a>
+              </span>
+            </div>
+            <button
+              type="submit"
+              class="w-full py-3 px-4 bg-primary text-white rounded-button"
+            >
+              Create Account
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/login_register.js"></script>
+</body>
+</html>

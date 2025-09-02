@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medical Record Forms - CareDock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet"/>
+
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#E27759', secondary: '#BBC18A' },
+          borderRadius: {
+            'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px',
+            'xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Page-only CSS -->
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Navigation Bar -->
+  <nav class="fixed top-0 left-0 right-0 bg-white shadow-sm z-30 px-8">
+    <div class="max-w-7xl mx-auto h-[100px] flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <span class="font-['Pacifico'] text-3xl text-primary">CareDock</span>
+        <a href="./resource_center.html" class="px-6 py-3 text-lg text-gray-600 flex items-center gap-2 !rounded-button whitespace-nowrap">
+          <i class="ri-arrow-left-line"></i>
+          <span>Return to Resource Center</span>
+        </a>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="./settings.html" class="w-8 h-8 flex items-center justify-center text-gray-600">
+          <i class="ri-settings-3-line"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="mt-32 flex-1 p-8 bg-gray-50 min-h-screen">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Medical Record Forms</h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">Essential medical record templates for your healthcare documentation</p>
+        <p class="text-lg text-primary italic mb-4">Tap any card to preview the form online.</p>
+      </div>
+      <!-- Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div class="template-card bg-white rounded-xl p-8 shadow-sm border border-gray-100 h-[280px] flex flex-col">
+          <div class="text-center flex flex-col flex-1">
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Basic Medical History Form</h3>
+            <p class="text-gray-600 mb-auto text-sm leading-relaxed">Comprehensive patient medical history template for initial consultations</p>
+            <button onclick="downloadTemplate('medical-history', event)" class="download-btn w-full bg-primary text-white py-3 px-6 !rounded-button font-medium whitespace-nowrap mt-6">
+              <span class="flex items-center justify-center gap-2">
+                <i class="ri-download-line"></i> Download PDF
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="template-card bg-white rounded-xl p-8 shadow-sm border border-gray-100 h-[280px] flex flex-col">
+          <div class="text-center flex flex-col flex-1">
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Medication Log Template</h3>
+            <p class="text-gray-600 mb-auto text-sm leading-relaxed">Track daily medications, dosages, and administration times effectively</p>
+            <button onclick="downloadTemplate('medication-log', event)" class="download-btn w-full bg-primary text-white py-3 px-6 !rounded-button font-medium whitespace-nowrap mt-6">
+              <span class="flex items-center justify-center gap-2">
+                <i class="ri-download-line"></i> Download PDF
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="template-card bg-white rounded-xl p-8 shadow-sm border border-gray-100 h-[280px] flex flex-col">
+          <div class="text-center flex flex-col flex-1">
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Doctor Visit Summary Sheet</h3>
+            <p class="text-gray-600 mb-auto text-sm leading-relaxed">Document appointment details, diagnoses, and treatment plans</p>
+            <button onclick="downloadTemplate('doctor-visit', event)" class="download-btn w-full bg-primary text-white py-3 px-6 !rounded-button font-medium whitespace-nowrap mt-6">
+              <span class="flex items-center justify-center gap-2">
+                <i class="ri-download-line"></i> Download PDF
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="template-card bg-white rounded-xl p-8 shadow-sm border border-gray-100 h-[280px] flex flex-col">
+          <div class="text-center flex flex-col flex-1">
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Emergency Contact Form</h3>
+            <p class="text-gray-600 mb-auto text-sm leading-relaxed">Essential emergency contacts and medical alert information</p>
+            <button onclick="downloadTemplate('emergency-contact', event)" class="download-btn w-full bg-primary text-white py-3 px-6 !rounded-button font-medium whitespace-nowrap mt-6">
+              <span class="flex items-center justify-center gap-2">
+                <i class="ri-download-line"></i> Download PDF
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="template-card bg-white rounded-xl p-8 shadow-sm border border-gray-100 h-[280px] flex flex-col">
+          <div class="text-center flex flex-col flex-1">
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Health Insurance Information</h3>
+            <p class="text-gray-600 mb-auto text-sm leading-relaxed">Organize insurance details, policy numbers, and coverage information</p>
+            <button onclick="downloadTemplate('insurance-info', event)" class="download-btn w-full bg-primary text-white py-3 px-6 !rounded-button font-medium whitespace-nowrap mt-6">
+              <span class="flex items-center justify-center gap-2">
+                <i class="ri-download-line"></i> Download PDF
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div class="template-card bg-white rounded-xl p-8 shadow-sm border border-gray-100 h-[280px] flex flex-col">
+          <div class="text-center flex flex-col flex-1">
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Immunization Record Form</h3>
+            <p class="text-gray-600 mb-auto text-sm leading-relaxed">Track vaccination history and upcoming immunization schedules</p>
+            <button onclick="downloadTemplate('immunization-record', event)" class="download-btn w-full bg-primary text-white py-3 px-6 !rounded-button font-medium whitespace-nowrap mt-6">
+              <span class="flex items-center justify-center gap-2">
+                <i class="ri-download-line"></i> Download PDF
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!--HIPAA reminder -->
+      <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 mb-12">
+        <div class="flex items-start gap-6">
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <i class="ri-information-line text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">HIPAA Compliance & Security</h3>
+            <p class="text-gray-600 mb-4">All templates are designed to help maintain HIPAA compliance when handling protected health information. Remember to:</p>
+            <ul class="space-y-2 text-gray-600">
+              <li class="flex items-center gap-2"><i class="ri-check-line text-green-500"></i> Store completed forms in a secure, locked location</li>
+              <li class="flex items-center gap-2"><i class="ri-check-line text-green-500"></i> Limit access to authorized personnel only</li>
+              <li class="flex items-center gap-2"><i class="ri-check-line text-green-500"></i> Use encryption for digital storage and transmission</li>
+              <li class="flex items-center gap-2"><i class="ri-check-line text-green-500"></i> Follow proper disposal procedures for physical documents</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <script src="../js/medical_records.js"></script>
+</body>
+</html>

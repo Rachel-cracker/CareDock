@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Self-care & Wellness - CareDock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#E27759', secondary: '#BBC18A' },
+          borderRadius: {
+            'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px',
+            'xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="../styles/self_care.css"/>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+  <!-- Navigation Bar -->
+  <nav class="fixed top-0 left-0 right-0 h-[100px] bg-white shadow-sm flex items-center px-6 z-30">
+    <div class="flex items-center justify-between w-full px-6">
+      <span class="font-['Pacifico'] text-2xl text-primary">CareDock</span>
+      <div class="flex items-center gap-6">
+        <a href="./calendar.html" class="px-4 py-2 text-gray-600 flex items-center gap-2 text-[1.25rem]">
+          <i class="ri-calendar-2-line"></i><span>Calendar</span>
+        </a>
+        <a href="./resource_center.html" class="px-4 py-2 text-gray-600 flex items-center gap-2 text-[1.25rem]">
+          <i class="ri-folder-3-line"></i><span>Resource Center</span>
+        </a>
+        <a href="./self_care.html" class="px-4 py-2 text-primary font-medium bg-primary/10 rounded-lg flex items-center gap-2 text-[1.25rem]">
+          <i class="ri-heart-line"></i><span>Self-care</span>
+        </a>
+        <a href="./settings.html" class="w-8 h-8 flex items-center justify-center text-gray-600">
+          <i class="ri-settings-3-line"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="mt-[132px] flex-1 p-8 bg-gray-50">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Self-care & Wellness</h1>
+            <p class="text-lg text-gray-600">Recharge your mind and body with quick self-care exercises</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <!-- Media Type filter -->
+            <button onclick="toggleFilterDropdown('mediaType')" class="relative h-12 px-4 bg-white rounded-full shadow-md flex items-center gap-2 text-gray-600 whitespace-nowrap">
+              <i class="ri-filter-3-line"></i><span class="text-sm">Media Type</span>
+              <div id="mediaTypeDropdown" class="hidden absolute top-full left-0 mt-2 w-40 bg-white rounded-lg shadow-lg p-2 z-50">
+                <div class="flex flex-col gap-1">
+                  <label class="flex items-center gap-2 p-2 rounded cursor-pointer">
+                    <input type="checkbox" class="hidden" value="video"/>
+                    <div class="w-4 h-4 border border-gray-300 rounded flex items-center justify-center">
+                      <i class="ri-check-line text-primary hidden"></i>
+                    </div>
+                    <span class="text-sm">Video</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2 rounded cursor-pointer">
+                    <input type="checkbox" class="hidden" value="audio"/>
+                    <div class="w-4 h-4 border border-gray-300 rounded flex items-center justify-center">
+                      <i class="ri-check-line text-primary hidden"></i>
+                    </div>
+                    <span class="text-sm">Audio</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2 rounded cursor-pointer">
+                    <input type="checkbox" class="hidden" value="text"/>
+                    <div class="w-4 h-4 border border-gray-300 rounded flex items-center justify-center">
+                      <i class="ri-check-line text-primary hidden"></i>
+                    </div>
+                    <span class="text-sm">Text</span>
+                  </label>
+                </div>
+              </div>
+            </button>
+            <!-- Tags filter -->
+            <button onclick="toggleFilterDropdown('tag')" class="relative h-12 px-4 bg-white rounded-full shadow-md flex items-center gap-2 text-gray-600 whitespace-nowrap">
+              <i class="ri-price-tag-3-line"></i><span class="text-sm">Tags</span>
+              <div id="tagDropdown" class="hidden absolute top-full left-0 mt-2 w-40 bg-white rounded-lg shadow-lg p-2 z-50">
+                <div class="flex flex-col gap-1">
+                  <label class="flex items-center gap-2 p-2 rounded cursor-pointer">
+                    <input type="checkbox" class="hidden" value="breathe"/>
+                    <div class="w-4 h-4 border border-gray-300 rounded flex items-center justify-center">
+                      <i class="ri-check-line text-primary hidden"></i>
+                    </div>
+                    <span class="text-sm">Breathe</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2 rounded cursor-pointer">
+                    <input type="checkbox" class="hidden" value="meditation"/>
+                    <div class="w-4 h-4 border border-gray-300 rounded flex items-center justify-center">
+                      <i class="ri-check-line text-primary hidden"></i>
+                    </div>
+                    <span class="text-sm">Meditation</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2 rounded cursor-pointer">
+                    <input type="checkbox" class="hidden" value="stretch"/>
+                    <div class="w-4 h-4 border border-gray-300 rounded flex items-center justify-center">
+                      <i class="ri-check-line text-primary hidden"></i>
+                    </div>
+                    <span class="text-sm">Stretch</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2 rounded cursor-pointer">
+                    <input type="checkbox" class="hidden" value="sleep"/>
+                    <div class="w-4 h-4 border border-gray-300 rounded flex items-center justify-center">
+                      <i class="ri-check-line text-primary hidden"></i>
+                    </div>
+                    <span class="text-sm">Sleep</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-2 rounded cursor-pointer">
+                    <input type="checkbox" class="hidden" value="anxiety"/>
+                    <div class="w-4 h-4 border border-gray-300 rounded flex items-center justify-center">
+                      <i class="ri-check-line text-primary hidden"></i>
+                    </div>
+                    <span class="text-sm">Anxiety</span>
+                  </label>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="max-w-6xl mx-auto grid grid-cols-2 gap-8">
+        <!-- Cards will be loaded dynamically from database -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Online Support button -->
+  <div class="fixed right-6 bottom-6 flex flex-col items-center">
+    <button id="chatButton" class="w-14 h-14 bg-white text-primary rounded-full shadow-lg flex items-center justify-center">
+      <i class="ri-customer-service-2-line text-xl"></i>
+    </button>
+    <span class="mt-1 text-xs font-medium text-gray-600">Online Support</span>
+  </div>
+  <!-- Online Support Sidebar -->
+  <div id="chatSidebar" class="fixed top-0 right-0 w-96 h-full bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+    <div class="h-full flex flex-col">
+      <div class="p-4 bg-[#E27759] text-white flex items-center justify-between">
+        <h3 class="font-medium">Customer Support</h3>
+        <button id="closeChatButton" class="text-white">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+      <div class="flex-1 p-4 overflow-y-auto" id="chatMessages"></div>
+      <div class="p-4 border-t">
+        <div class="flex gap-2">
+          <input type="text" id="messageInput" placeholder="Type your message..." class="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:border-[#E27759]"/>
+          <button id="sendMessage" class="px-4 py-2 bg-[#E27759] text-white rounded-full">
+            <i class="ri-send-plane-fill"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise Modal -->
+  <div id="exerciseModal" class="exercise-modal">
+    <div class="modal-content">
+      <div class="p-6 bg-primary text-white flex items-center justify-between">
+        <h3 class="text-xl font-semibold" id="modalTitle">Exercise Details</h3>
+        <button onclick="closeExerciseModal()" class="text-white">
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+      <div class="p-6" id="modalContent">
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/chat-support.js"></script>
+  <script src="../js/self_care.js"></script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar - CareDock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <link rel="stylesheet" href="../styles/calendar.css">
+</head>
+
+<body class="bg-[#F6CEA5] min-h-screen">
+  <div class="flex min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 h-[100px] bg-white shadow-sm flex items-center justify-between px-6 z-50">
+      <span class="font-['Pacifico'] text-2xl text-[#E27759]">CareDock</span>
+      <div class="flex items-center ml-auto">
+        <div class="flex items-center">
+          <a href="./calendar.html" class="px-4 py-2 text-[#E27759] font-medium bg-[#E27759]/10 rounded-button flex items-center gap-2 text-[1.25rem]">
+            <i class="ri-calendar-2-line"></i>
+            <span>Calendar</span>
+          </a>
+          <div class="w-[40px]"></div>
+          <a href="./resource_center.html" class="px-4 py-2 text-gray-600 rounded-button flex items-center gap-2 text-[1.25rem]">
+            <i class="ri-folder-3-line"></i>
+            <span>Resource Center</span>
+          </a>
+          <div class="w-[40px]"></div>
+          <a href="./self_care.html" class="px-4 py-2 text-gray-600 rounded-button flex items-center gap-2 text-[1.25rem]">
+            <i class="ri-heart-line"></i>
+            <span>Self-care</span>
+          </a>
+        </div>
+        <div class="ml-10 flex items-center">
+          <a href="./settings.html" class="w-8 h-8 flex items-center justify-center text-gray-600">
+            <i class="ri-settings-3-line"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+    <main class="mt-[100px] flex-1 p-6">
+      <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Todo list and Completed list -->
+        <section class="bg-white rounded-lg shadow-sm p-6">
+          <div class="grid grid-cols-2 gap-8">
+            <div>
+              <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="ri-todo-line text-[#E27759]"></i>
+                Today's TO-DO List
+              </h2>
+              <p id="todoEmpty" class="text-sm text-gray-500">No tasks yet.</p>
+              <div id="todoList" class="space-y-3"></div>
+            </div>
+
+            <div>
+              <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="ri-check-double-line text-[#BBC18A]"></i>
+                Completed Tasks
+              </h2>
+              <p id="doneEmpty" class="text-sm text-gray-500">Nothing completed yet.</p>
+              <div id="doneList" class="space-y-3"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Calendar Controls + Modal -->
+        <section class="bg-white rounded-lg shadow-sm">
+          <div class="p-4 border-b">
+            <div class="flex items-start justify-between gap-4">
+              <!-- LEFT: previous day + today + priority colors + next day -->
+              <div class="flex items-start gap-4">
+                <button id="prevBtn" class="px-3 py-1 text-sm text-gray-600 flex items-center gap-1">
+                  <i class="ri-arrow-left-s-line"></i>
+                  <span>Previous</span>
+                </button>
+                <div class="flex flex-col items-center">
+                  <h1 id="dateHeading" class="text-2xl font-semibold"></h1>
+                  <button id="todayBtn" class="mt-1 px-4 py-1 text-sm font-medium text-[#E27759] bg-white border border-[#E27759] rounded-button">
+                    Today
+                  </button>
+                  <!-- priority colors under the date -->
+                  <div class="flex items-center gap-4 mt-4">
+                    <div class="text-sm flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                      <span>High Priority</span>
+                    </div>
+                    <div class="text-sm flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                      <span>Medium Priority</span>
+                    </div>
+                    <div class="text-sm flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                      <span>Low Priority</span>
+                    </div>
+                  </div>
+                </div>
+                <button id="nextBtn" class="px-3 py-1 text-sm text-gray-600 flex items-center gap-1">
+                  <span>Next</span>
+                  <i class="ri-arrow-right-s-line"></i>
+                </button>
+              </div>
+
+              <!-- view switch button + add task button + add task modal -->
+              <div class="flex items-center gap-4">
+                <div class="flex rounded-full bg-gray-100 p-1">
+                  <button id="monthTab" class="px-4 py-1 text-sm font-medium text-gray-600" data-view="month">Month</button>
+                  <button id="weekTab" class="px-4 py-1 text-sm font-medium bg-white shadow rounded-full" data-view="week">Week</button>
+                  <button id="dayTab" class="px-4 py-1 text-sm font-medium text-gray-600" data-view="day">Day</button>
+                </div>
+                <button id="addTaskButton" class="px-4 py-2 bg-[#E27759] text-white rounded-button flex items-center gap-2">
+                  <i class="ri-add-line"></i>
+                  <span class="whitespace-nowrap">Add Task</span>
+                </button>
+
+                <!-- Add Task Modal -->
+                <div id="addTaskModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60]">
+                  <div class="bg-white rounded-lg w-[500px] max-h-[90vh] overflow-y-auto">
+                    <div class="p-4 bg-[#E27759] text-white flex items-center justify-between">
+                      <h3 class="font-medium">Add New Task</h3>
+                      <button id="closeAddTaskModal" class="text-white">
+                        <i class="ri-close-line text-xl"></i>
+                      </button>
+                    </div>
+                    <form 
+                      id="addTaskForm" 
+                      class="p-6 space-y-4"
+                    >
+                      <div>
+                        <label 
+                          class="block text-sm font-medium text-gray-700 mb-1">
+                          Task Title
+                        </label>
+                        <div class="flex gap-2">
+                          <input 
+                            type="text" 
+                            id="newTaskTitle" 
+                            name="title" 
+                            class="flex-1 px-3 py-2 border rounded-lg" 
+                            required 
+                          />
+                          <button 
+                            type="button" 
+                            id="aiAssistButton" 
+                            class="px-3 py-2 text-[#E27759] rounded-lg flex items-center gap-1" 
+                            title="Get AI assistance"
+                          >
+                            <i class="ri-brain-line"></i>
+                            <span class="text-sm">AI Assist</span>
+                          </button>
+                        </div>
+                        <p class="text-gray-500 text-sm italic mt-1">
+                          Tip: AI Assist can fill in details from a sentence like "Doctor appointment 2pm".
+                        </p>
+                      </div>
+                      <div class="grid grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                          <input 
+                            type="date" 
+                            id="newTaskDate" 
+                            name="date" 
+                            class="w-full px-3 py-2 border rounded-lg" 
+                            required 
+                          />
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                          <input 
+                            type="time" 
+                            id="newTaskTime" 
+                            name="time" 
+                            class="w-full px-3 py-2 border rounded-lg" 
+                            required 
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                          Duration (minutes)
+                        </label>
+                        <input 
+                          type="number" 
+                          id="newTaskDuration" 
+                          name="duration" 
+                          min="15" 
+                          step="15" 
+                          value="30" 
+                          class="w-full px-3 py-2 border rounded-lg" 
+                          required 
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                        <select 
+                          id="newTaskPriority" 
+                          name="priority" 
+                          class="w-full px-3 py-2 border rounded-lg" 
+                          required
+                        >
+                          <option value="high">High Priority</option>
+                          <option value="medium" selected>Medium Priority</option>
+                          <option value="low">Low Priority</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select 
+                          id="newTaskCategory" 
+                          name="category" 
+                          class="w-full px-3 py-2 border rounded-lg" 
+                          required
+                        >
+                          <option value="medication" selected>Medication</option>
+                          <option value="appointment">Appointment</option>
+                          <option value="shopping">Shopping</option>
+                          <option value="exercise">Exercise</option>
+                          <option value="general">General</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                        <textarea 
+                          id="newTaskNotes" 
+                          name="notes" 
+                          class="w-full px-3 py-2 border rounded-lg h-32 resize-none"
+                        ></textarea>
+                      </div>
+                      <div class="flex items-center justify-end gap-3 pt-4">
+                        <button 
+                          type="button" 
+                          id="cancelAddTask" 
+                          class="px-4 py-2 text-gray-600"
+                        >
+                          Cancel
+                        </button>
+
+                        <button 
+                          type="submit" 
+                          class="px-4 py-2 bg-[#E27759] text-white rounded-button"
+                        >
+                          Save Task
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>  
+            </div>  
+            </div> 
+            
+            <!-- Day view with time slots -->
+            <div class="calendar-grid" id="dayViewGrid">
+            <div class="time-slot text-sm text-gray-500">6:00 AM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">7:00 AM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">8:00 AM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">9:00 AM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">10:00 AM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">11:00 AM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">12:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">1:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">2:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">3:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">4:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">5:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">6:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">7:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">8:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">9:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">10:00 PM</div><div class="event-slot"></div>
+            <div class="time-slot text-sm text-gray-500">11:00 PM</div><div class="event-slot"></div>
+            </div>
+        </section>
+      </div>
+    </main>
+    <!--Online Support button -->
+    <div class="fixed right-6 bottom-24 flex flex-col items-center">
+      <button id="chatButton" class="w-14 h-14 bg-white text-[#E27759] rounded-full shadow-lg flex items-center justify-center">
+        <i class="ri-customer-service-2-line text-xl"></i>
+      </button>
+      <span class="mt-1 text-xs font-medium text-gray-600">Online Support</span>
+    </div>
+    <!-- Task Details Sidebar -->
+        <div 
+        id="taskPanel" 
+        class="task-panel hidden"
+        >
+        <div class="h-full flex flex-col">
+          <!-- header -->
+          <div class="p-4 bg-[#E27759] text-white flex items-center justify-between">
+            <h3 class="font-medium">Task Details</h3>
+            <button 
+              onclick="closeTaskPanel()" 
+              class="text-white"
+            >
+              <i class="ri-close-line text-xl"></i>
+            </button>
+          </div>
+          <!-- content -->
+          <div class="flex-1 p-6 overflow-y-auto">
+            <div class="mb-6">
+              <h4 
+                class="text-lg font-medium mb-2" 
+                id="taskTitle"
+              ></h4>
+              <div 
+                class="flex items-center gap-2 text-sm text-gray-600 mb-4" 
+                id="taskTime"
+              ></div>
+              <div class="space-y-4">
+                <div>
+                  <label 
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Status
+                  </label>
+                  <select 
+                    id="taskStatus" 
+                    class="px-3 py-2 border rounded-lg w-full"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+                <div>
+                  <label 
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Notes
+                  </label>
+                  <textarea 
+                    id="taskNotes" 
+                    class="px-3 py-2 border rounded-lg w-full h-32 resize-none"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            <!--buttons -->
+            <div class="flex items-center gap-3">
+              <button 
+                onclick="saveTaskChanges()" 
+                class="flex-1 px-4 py-2 bg-[#E27759] text-white rounded-button"
+              >
+                Save Changes
+              </button>
+              <button 
+                onclick="deleteTask()" 
+                class="px-4 py-2 text-red-600"
+              >
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+    <!-- Online Support Sidebar -->
+    <div 
+    id="chatSidebar" 
+    class="fixed top-0 right-0 w-96 h-full bg-white shadow-lg transform translate-x-full z-50"
+    >
+    <div class="h-full flex flex-col">
+      <div 
+        class="p-4 bg-[#E27759] text-white flex items-center justify-between"
+      >
+        <h3 class="font-medium">Customer Support</h3>
+        <button 
+          id="closeChatButton" 
+          class="text-white"
+        >
+          <i class="ri-close-line text-xl"></i>
+        </button>
+      </div>
+      <!-- chat messages area -->
+      <div 
+        class="flex-1 p-4 overflow-y-auto" 
+        id="chatMessages"
+      >
+      </div>
+      <!-- chat input area -->
+      <div class="p-4 border-t">
+        <div class="flex gap-2">
+          <input 
+            type="text" 
+            id="messageInput" 
+            placeholder="Type your message..." 
+            class="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:border-[#E27759]" 
+          />
+          <button 
+            id="sendMessage" 
+            class="px-4 py-2 bg-[#E27759] text-white rounded-full"
+          >
+            <i class="ri-send-plane-fill"></i>
+          </button>
+        </div>
+      </div>
+
+</div>
+</div>
+  </div>
+
+  <script src="../js/chat-support.js"></script>
+  <script src="../js/calendar.js"></script>
+</body>
+</html>
