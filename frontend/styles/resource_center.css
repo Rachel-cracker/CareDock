@@ -1,8 +1,3 @@
-/* icon fallback */
-:where([class^="ri-"])::before { 
-  content: "\f3c2"; 
-}
-
 /* cards */
 .resource-card {
 }
