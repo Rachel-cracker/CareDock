@@ -8,9 +8,8 @@ body {
   content: "\f3c2";
 }
 
-/* left image panel */
+/* left panel */
 .auth-side {
-  background-image: url("../images/login-hero.jpg");
   background-size: cover;
   background-position: center;
 }

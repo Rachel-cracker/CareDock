@@ -1,6 +1,7 @@
-// API setup
-const API_BASE = "http://127.0.0.1:8000";
-window.API_BASE = API_BASE;
+// Ensure API_BASE is defined
+if (typeof window.API_BASE === 'undefined') {
+  window.API_BASE = "http://localhost:8000";
+}
 
 // variables
 let allTasks = [];
@@ -8,10 +9,18 @@ let currentView = 'week';
 let currentDate = new Date();
 let weekWrap = null;
 let monthWrap = null;
+let todoList = null;
+let doneList = null;
+let todoEmpty = null;
+let doneEmpty = null;
+let addTaskForm = null;
 
 // get auth headers
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
+  if (!token) {
+    console.warn('No auth token found');
+  }
   return {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`
@@ -23,13 +32,66 @@ function getUserId() {
   return localStorage.getItem('user_id');
 }
 
-// add task modal
+// Test function for debugging token - you can call this in browser console
+window.testProfileToken = function() {
+  var token = localStorage.getItem('token');
+  console.log('Profile Token test - Token exists:', !!token);
+  console.log('Profile Token test - Token length:', token ? token.length : 0);
+  console.log('Profile Token test - Token preview:', token ? token.substring(0, 50) + '...' : 'null');
+  
+  if (!token) {
+    console.log('Profile Token test - No token found');
+    return;
+  }
+  
+  console.log('Profile Token test - Making request to profile endpoint...');
+  fetch(window.API_BASE + "/profile/me", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+    console.log('Profile Token test - Response status:', res.status);
+    console.log('Profile Token test - Response headers:', res.headers);
+    return res.text();
+  })
+  .then(text => {
+    console.log('Profile Token test - Response body:', text);
+    try {
+      var json = JSON.parse(text);
+      console.log('Profile Token test - Parsed JSON:', json);
+    } catch (e) {
+      console.log('Profile Token test - Could not parse as JSON');
+    }
+  })
+  .catch(err => {
+    console.log('Profile Token test - Fetch error:', err);
+  });
+};
+
+// Main initialization
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('Calendar: DOMContentLoaded event fired');
+  
+  // Initialize DOM elements
+  todoList = document.getElementById('todoList');
+  doneList = document.getElementById('doneList');
+  todoEmpty = document.getElementById('todoEmpty');
+  doneEmpty = document.getElementById('doneEmpty');
+  addTaskForm = document.getElementById('addTaskForm');
+  
+  console.log('Calendar: DOM elements found:', {
+    todoList: !!todoList,
+    doneList: !!doneList,
+    todoEmpty: !!todoEmpty,
+    doneEmpty: !!doneEmpty,
+    addTaskForm: !!addTaskForm
+  });
+  
   const addTaskButton = document.getElementById('addTaskButton');
   const addTaskModal = document.getElementById('addTaskModal');
   const closeAddTaskModal = document.getElementById('closeAddTaskModal');
   const cancelAddTask = document.getElementById('cancelAddTask');
-  const addTaskForm = document.getElementById('addTaskForm');
 
   function showAddTaskModal() {
     addTaskModal.classList.remove('hidden');
@@ -72,14 +134,34 @@ document.addEventListener('DOMContentLoaded', () => {
       text: userText
     };
     // make the request
-    var res = await fetch(API_BASE + "/tasks/ai-assist", {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(payload)
-    });
+    try {
+      console.log('AI Assist: Making request to:', window.API_BASE + "/tasks/ai-assist");
+      console.log('AI Assist: Headers:', getAuthHeaders());
+      console.log('AI Assist: Payload:', payload);
+      
+      var res = await fetch(window.API_BASE + "/tasks/ai-assist", {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload)
+      });
 
-    // parse response (AI response)
-    var data = await res.json();
+      console.log('AI Assist: Response status:', res.status, res.statusText);
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('AI Assist API error:', res.status, res.statusText, errorText);
+        alert('AI Assist is not available right now. Please fill the form manually.');
+        return;
+      }
+
+      // parse response (AI response)
+      var data = await res.json();
+      console.log('AI Assist: Response data:', data);
+    } catch (error) {
+      console.error('AI Assist error:', error);
+      alert('AI Assist is not available right now. Please fill the form manually.');
+      return;
+    }
       // defaults if AI doesn't give everything, 
       // this part is written by cursor to handle the case where the AI doesn't give all the fields
       var newTitle    = (data.title && data.title.length > 0) ? data.title : userText;
@@ -111,10 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
       categoryEl.value = category;
       notesEl.value = newNotes;
   });
-});
 
-// create task
-if (addTaskForm) {
+  // create task form submission
+  if (addTaskForm) {
   addTaskForm.addEventListener("submit", function (e) {
     // this line of code is written by cursor to prevent reloading the page
     //because if reloading the page, the task created will fail
@@ -154,7 +235,8 @@ if (addTaskForm) {
       completed: false
     };
     // communicate with endpoint to create the task
-    var url = API_BASE + "/tasks?user_id=" + encodeURIComponent(userId);
+    var userIdInt = parseInt(userId, 10);
+    var url = window.API_BASE + "/tasks?user_id=" + userIdInt;
     fetch(url, {
       method: "POST",
       headers: getAuthHeaders(),
@@ -171,16 +253,29 @@ if (addTaskForm) {
       allTasks.push(createdTask);
 
       // refresh the UI
-      if (typeof refreshAllViews === "function") {
-        refreshAllViews();
-      }
-      if (typeof hideAddTaskModal === "function") {
-        hideAddTaskModal();
-      }
+      refreshAllViews();
+      hideAddTaskModal();
     })
-;
+    .catch(function(error) {
+      console.error('Error creating task:', error);
+      alert('Failed to create task. Please try again.');
+    });
   });
-}
+  }
+
+  // Check authentication and load initial data
+  var uid = getUserId();
+  if (!uid) {
+    window.location.href = 'login_register.html';
+    return;
+  }
+  loadTasks();
+
+  // Initialize view switching
+  console.log('Calendar: About to initialize view switching');
+  initializeViewSwitching();
+  console.log('Calendar: Initialization complete');
+});
 
 // task functions
 // This function is written by ChatGPT 4.1 to create task element
@@ -260,20 +355,36 @@ function addTaskToCalendar(task) {
   });
 }
 
+// Display tasks for current day view
+function displayTasksInDayView() {
+  const currentDateStr = currentDate.toISOString().split('T')[0];
+  
+  allTasks.forEach(function(task) {
+    if (task.date === currentDateStr) {
+      addTaskToCalendar(task);
+    }
+  });
+}
+
 // This helper function is written by ChatGPT 5 to refresh all views
 function refreshAllViews() {
-  // clear existing tasks
+  // clear existing tasks from all views
   document.querySelectorAll('.event-card').forEach(function(card) { card.remove(); });
-  
-  // add tasks to day view
-  allTasks.forEach(function(task) { addTaskToCalendar(task); });
+  if (weekWrap) {
+    weekWrap.querySelectorAll('.week-task').forEach(function(task) { task.remove(); });
+  }
+  if (monthWrap) {
+    monthWrap.querySelectorAll('.month-task').forEach(function(task) { task.remove(); });
+  }
   
   // update todo list
   updateTodaysTodoList();
   
-  // update current view
+  // refresh current view
   if (typeof currentView !== 'undefined') {
-    if (currentView === 'week') {
+    if (currentView === 'day') {
+      displayTasksInDayView();
+    } else if (currentView === 'week') {
       displayTasksInWeekView();
     } else if (currentView === 'month') {
       displayTasksInMonthView();
@@ -285,26 +396,39 @@ function refreshAllViews() {
 function loadTasks() {
   var userId = getUserId();
   if (!userId) return;
-  var url = API_BASE + "/tasks?user_id=" + encodeURIComponent(userId);
+  
+  // Convert user_id to integer if it's stored as string
+  var userIdInt = parseInt(userId, 10);
+  if (isNaN(userIdInt)) {
+    console.error('Invalid user_id:', userId);
+    window.location.href = 'login_register.html';
+    return;
+  }
+  
+  var url = window.API_BASE + "/tasks?user_id=" + userIdInt;
   fetch(url, {
     method: 'GET',
     headers: getAuthHeaders()
   })
-  .then(function (res) { return res.json(); })
+  .then(function (res) { 
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    return res.json();
+  })
   .then(function (data) {
     allTasks = data || [];
     refreshAllViews();
+  })
+  .catch(function (error) {
+    console.error('Error loading tasks:', error);
+    // If it's an auth error, redirect to login
+    if (error.message.includes('401') || error.message.includes('403')) {
+      window.location.href = 'login_register.html';
+    }
   });
 }
-// load tasks when page loads(written by cursor to fix the bug of not showing the tasks)
-document.addEventListener('DOMContentLoaded', function () {
-  var uid = getUserId();
-  if (!uid) {
-    window.location.href = 'login_register.html';
-    return;
-  }
-  loadTasks();
-});
+// This function was moved to main DOMContentLoaded block
 
 // This function is written by ChatGPT 5 to create todo list item
 function createTodoListItem(task) {
@@ -452,8 +576,29 @@ function setTaskElementState(taskId, taskData) {
   }
 }
 
+function saveTaskChanges() {
+  var status = document.getElementById('taskStatus').value;
+  var notes = document.getElementById('taskNotes').value;
+  
+  var url = window.API_BASE + '/tasks/' + String(currentTaskId);
+  var bodyObj = { status: status, notes: notes };
+  
+  fetch(url, {
+    method: 'PATCH',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(bodyObj)
+  })
+  .then(function (res) { return res.json(); })
+  .then(function (updatedTask) {
+    updateTaskInList(updatedTask);
+    setTaskElementState(currentTaskId, updatedTask);
+    refreshAllViews();
+    closeTaskPanel();
+  });
+}
+
 function deleteTask() {
-  var url = API_BASE + '/tasks/' + String(currentTaskId);
+  var url = window.API_BASE + '/tasks/' + String(currentTaskId);
   fetch(url, {
     method: 'DELETE',
     headers: getAuthHeaders()
@@ -479,7 +624,7 @@ function toggleTaskComplete(taskId, buttonElement) {
   var newCompleted = !wasCompleted;
   var newStatus = newCompleted ? 'completed' : 'pending';
 
-  var url = API_BASE + '/tasks/' + String(taskId);
+  var url = window.API_BASE + '/tasks/' + String(taskId);
   var bodyObj = { completed: newCompleted, status: newStatus };
 
   fetch(url, {
@@ -517,11 +662,24 @@ function labelMonth(d) { return d.toLocaleDateString(undefined,{month:'long',yea
 // Function to set the date heading
 function setHeading() {
   const dateHeading = document.getElementById('dateHeading');
-  if (!dateHeading) return;
+  console.log('Calendar: setHeading called', { 
+    currentView, 
+    currentDate, 
+    dateHeading: !!dateHeading 
+  });
   
-  if (currentView === 'day')   dateHeading.textContent = labelDay(currentDate);
-  if (currentView === 'week')  dateHeading.textContent = 'Week of ' + labelDay(startOfWeek(currentDate));
-  if (currentView === 'month') dateHeading.textContent = labelMonth(currentDate);
+  if (!dateHeading) {
+    console.error('Calendar: dateHeading element not found!');
+    return;
+  }
+  
+  let headingText = '';
+  if (currentView === 'day')   headingText = labelDay(currentDate);
+  if (currentView === 'week')  headingText = 'Week of ' + labelDay(startOfWeek(currentDate));
+  if (currentView === 'month') headingText = labelMonth(currentDate);
+  
+  dateHeading.textContent = headingText;
+  console.log('Calendar: dateHeading set to:', headingText);
 }
 
 // The following functions are written by ChatGPT 5
@@ -559,7 +717,7 @@ function displayTasksInWeekView() {
           };
           const colorClass = priorityColors[task.priority] || 'bg-blue-100 text-blue-900 border-blue-500';
           
-          taskEl.className = `absolute ${colorClass} text-xs p-1 rounded border-l-2 cursor-pointer`;
+          taskEl.className = `week-task absolute ${colorClass} text-xs p-1 rounded border-l-2 cursor-pointer`;
           taskEl.style.top = `${(taskHour - 6) * 48}px`; // 48px per hour, starting from 6 AM
 
           taskEl.style.left = '2px';
@@ -623,7 +781,7 @@ function displayTasksInMonthView() {
             };
             const colorClass = priorityColors[task.priority] || 'bg-blue-100 text-blue-800';
             
-            taskEl.className = `${colorClass} text-xs p-1 rounded mt-1 truncate cursor-pointer`;
+            taskEl.className = `month-task ${colorClass} text-xs p-1 rounded mt-1 truncate cursor-pointer`;
             taskEl.textContent = `${task.time} ${task.title}`;
             
             // Add task data attributes for the panel
@@ -643,7 +801,7 @@ function displayTasksInMonthView() {
 }
 
 // view switching
-document.addEventListener('DOMContentLoaded', () => {
+function initializeViewSwitching() {
   const dayView   = document.querySelector('.calendar-grid');
 
   const monthTab  = document.getElementById('monthTab');
@@ -759,14 +917,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (v === 'week') {
       if (!weekWrap) { weekWrap = createWeekView(); dayView.parentNode.appendChild(weekWrap); }
       weekWrap.style.display = 'block';
-      displayTasksInWeekView();
     } else if (v === 'month') {
       if (!monthWrap) { monthWrap = createMonthView(); dayView.parentNode.appendChild(monthWrap); }
       monthWrap.style.display = 'block';
-      displayTasksInMonthView();
     }
 
     setHeading();
+    refreshAllViews();
   }
 
   // tab clicks
@@ -839,4 +996,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // initialize
   setHeading();
   switchView('week');
-});
+}

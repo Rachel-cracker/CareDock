@@ -58,7 +58,6 @@ def generate_response(prompt: str) -> str:
         #temperature is the randomness of the response
         #since this is a clinician role, we want it to be more precise and not too random
         temperature=0.2,
-        max_tokens=400,
         stream=False,
     )
     #choices[0] is the first response from the api

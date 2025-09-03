@@ -1,4 +1,7 @@
-var API_BASE = "http://127.0.0.1:8000";
+// Ensure API_BASE is defined
+if (typeof window.API_BASE === 'undefined') {
+  window.API_BASE = "http://localhost:8000";
+}
 var activeDropdown = null;
 var allCards = [];
 
@@ -278,7 +281,7 @@ function displayCards(cards) {
 
 //load the self care cards
 function loadSelfcareCards() {
-  fetch(API_BASE + "/selfcare/files")
+  fetch(window.API_BASE + "/selfcare/files")
     .then(function (res) { return res.json(); })
     .then(function (cards) {
       if (cards && cards.length > 0) {
@@ -288,6 +291,11 @@ function loadSelfcareCards() {
         allCards = [];
         displayCards([]);
       }
+    })
+    .catch(function (error) {
+      console.error('Error loading self-care cards:', error);
+      allCards = [];
+      displayCards([]);
     });
 }
 

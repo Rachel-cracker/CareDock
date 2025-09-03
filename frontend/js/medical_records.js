@@ -1,5 +1,5 @@
 // API setup
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "http://localhost:8000";
 
 // download file from backend function written by cursor
 window.downloadTemplate = function (templateType, ev) {

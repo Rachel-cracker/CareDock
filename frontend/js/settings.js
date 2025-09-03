@@ -1,4 +1,8 @@
-var API_BASE = "http://localhost:8000";
+//written by cursor to fix a bug of redirecting to login page
+window.API_BASE = window.API_BASE || "http://localhost:8000";
+// Optional: local alias if you want to use API_BASE too
+const API_BASE = window.API_BASE;
+
 var originalSetting = false;
 var originalEmail = "";
 var originalFullName = "";
@@ -8,10 +12,41 @@ function getToken() {
   return localStorage.getItem("token");
 }
 
-function authHeaders() {
-  return { "Authorization": "Bearer " + getToken() };
-}
+// Test function for debugging - you can call this in browser console
+window.testToken = function() {
+  var token = getToken();
+  console.log('Token test - Token exists:', !!token);
+  console.log('Token test - Token:', token);
+  
+  if (!token) {
+    console.log('Token test - No token found');
+    return;
+  }
+  
+  fetch(window.API_BASE + "/profile/me", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+  .then(res => {
+    console.log('Token test - Response status:', res.status);
+    return res.text();
+  })
+  .then(text => {
+    console.log('Token test - Response body:', text);
+  })
+  .catch(err => {
+    console.log('Token test - Error:', err);
+  });
+};
 
+function authHeaders() {
+  return { 
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + getToken() 
+  };
+}
+//check if the profile information has changed
 function hasChanges(toggleEl, emailEl, nameEl) {
   return (toggleEl.checked !== originalSetting) ||
          (emailEl.value !== originalEmail) ||
@@ -37,25 +72,33 @@ function showNotification(message, isError) {
   document.body.appendChild(note);
   setTimeout(function () { if (note && note.parentNode) note.parentNode.removeChild(note); }, 3000);
 }
-
+//load the user profile
 function loadUserProfile(toggleEl, emailEl, nameEl, saveBtn) {
   var token = getToken();
   if (!token) {
-    window.location.href = "./login_register.html";
+    window.location.href = "login_register.html";
     return;
   }
 
   // profile
-  fetch(API_BASE + "/profile/me", { headers: authHeaders() })
+  
+  fetch(window.API_BASE + "/profile/me", { headers: authHeaders() })
     .then(function (res) {
-      if (res.status === 401) {
+      if (res.status === 401 || res.status === 403) {
         localStorage.removeItem("token");
-        window.location.href = "./login_register.html";
-        return Promise.reject(); // stop chain
+        window.location.href = "login_register.html";
+        return Promise.reject(); 
       }
       return res.json();
     })
     .then(function (profile) {
+      // Check if the response indicates an invalid token
+      if (profile && profile.detail && (profile.detail === "Invalid token" || profile.detail.includes("Invalid"))) {
+        localStorage.removeItem("token");
+        window.location.href = "login_register.html";
+        return;
+      }
+      //if the profile is not found, return
       if (!profile) return;
       originalEmail = profile.email || "";
       originalFullName = profile.full_name || "";
@@ -63,7 +106,7 @@ function loadUserProfile(toggleEl, emailEl, nameEl, saveBtn) {
       nameEl.value = originalFullName;
     })
     .finally(function () {
-      // local setting
+      //self care support setting
       var saved = localStorage.getItem("selfCareAISupport");
       if (saved !== null) {
         originalSetting = (saved === "true");
@@ -72,13 +115,18 @@ function loadUserProfile(toggleEl, emailEl, nameEl, saveBtn) {
         originalSetting = toggleEl.checked;
       }
       updateSaveButton(saveBtn, toggleEl, emailEl, nameEl);
+    })
+    .catch(function(error) {
+      console.error('Settings: Error loading profile:', error);
+      localStorage.removeItem("token");
+      window.location.href = "login_register.html";
     });
 }
 
 function saveChanges(toggleEl, emailEl, nameEl, saveBtn) {
   var token = getToken();
   if (!token) {
-    window.location.href = "./login_register.html";
+    window.location.href = "login_register.html";
     return;
   }
 
@@ -87,7 +135,7 @@ function saveChanges(toggleEl, emailEl, nameEl, saveBtn) {
   var doProfile = Promise.resolve();
 
   if (needsProfile) {
-    doProfile = fetch(API_BASE + "/profile/me", {
+    doProfile = fetch(window.API_BASE + "/profile/me", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -112,7 +160,7 @@ function saveChanges(toggleEl, emailEl, nameEl, saveBtn) {
   });
 }
 
-// ===== 3) Wire-up =====
+// put the functions together
 document.addEventListener("DOMContentLoaded", function () {
   var toggle = document.querySelector("#selfCareToggle");
   var saveButton = document.querySelector('button[class*="bg-primary"]');

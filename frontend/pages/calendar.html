@@ -9,6 +9,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 
+            primary: "#E27759", 
+            secondary: "#BBC18A" 
+          },
+          borderRadius: {
+            "button": "8px"
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="../styles/calendar.css">
 </head>
 
@@ -70,7 +85,7 @@
         <section class="bg-white rounded-lg shadow-sm">
           <div class="p-4 border-b">
             <div class="flex items-start justify-between gap-4">
-              <!-- LEFT: previous day + today + priority colors + next day -->
+              <!-- previous day + today + priority colors + next day -->
               <div class="flex items-start gap-4">
                 <button id="prevBtn" class="px-3 py-1 text-sm text-gray-600 flex items-center gap-1">
                   <i class="ri-arrow-left-s-line"></i>
@@ -249,7 +264,6 @@
                 </div>
               </div>  
             </div>  
-            </div> 
             
             <!-- Day view with time slots -->
             <div class="calendar-grid" id="dayViewGrid">

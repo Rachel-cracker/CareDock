@@ -68,7 +68,7 @@ function showStressDetectionPopup() {
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
 }
 
-const API_BASE = window.API_BASE || "http://127.0.0.1:8000";
+const API_BASE = window.API_BASE || "http://localhost:8000";
 
 function authHeaders() {
   const token = localStorage.getItem("token") || "";

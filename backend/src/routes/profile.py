@@ -27,7 +27,7 @@ def get_current_user(authorization: str = Header(...), session: Session = Depend
         if not payload:
             raise HTTPException(status_code=401, detail="Invalid token")
         # get user id from token
-        user_id = payload.get("sub")
+        user_id = int(payload.get("sub"))
         user = session.query(models.User).filter(models.User.id == user_id).first()
         if not user:
             raise HTTPException(status_code=401, detail="User not found")

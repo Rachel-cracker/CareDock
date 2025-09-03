@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_BASE = "http://127.0.0.1:8000";
+  const API_BASE = "http://localhost:8000";
 
   // switch the login and register forms
   function toggleForms() {
@@ -47,8 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("email", data.email);
     window.location.href = "calendar.html";
   }
+
 //put the functions together
-  document.addEventListener("DOMContentLoaded", function () {
     // toggle forms
     var loginRadio = document.getElementById("login");
     var registerRadio = document.getElementById("register");
@@ -123,5 +123,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
     }
-  });
 });

@@ -19,7 +19,7 @@ def check_password(plain: str, hashed: str):
 #create token for user
 def create_token(user_id: int, email: str):
     payload = {
-        "sub": user_id,
+        "sub": str(user_id),
         "email": email,
         "exp": datetime.now(timezone.utc) + timedelta(minutes=EXPIRE_MINUTES),
     }

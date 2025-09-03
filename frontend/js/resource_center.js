@@ -1,6 +1,7 @@
-// API setup
-const API_BASE = "http://127.0.0.1:8000";
-window.API_BASE = API_BASE;
+// Ensure API_BASE is defined
+if (typeof window.API_BASE === 'undefined') {
+  window.API_BASE = "http://localhost:8000";
+}
   
 function openSearchModal() {
   document.getElementById("searchOverlay").classList.add("active");
@@ -29,7 +30,7 @@ function showAISummary() {
     '<div class="text-blue-600 text-sm">Generating AI summary...</div>';
   summaryBox.classList.remove("hidden");
 
-  var url = API_BASE + "/resource/ai-summary";
+  var url = window.API_BASE + "/resource/ai-summary";
   var payload = { question: question };
   fetch(url, {
     method: "POST",
