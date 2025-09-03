@@ -9,6 +9,10 @@ load_dotenv()
 
 app = FastAPI()
 
+@app.get("/health", include_in_schema=False)
+def health():
+    return {"ok": True}
+
 #cross region access share
 app.add_middleware(
     CORSMiddleware,
