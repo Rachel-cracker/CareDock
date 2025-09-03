@@ -11,7 +11,12 @@ load_dotenv()
 Base = declarative_base()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-engine = create_engine(DATABASE_URL, echo=True) 
+if not DATABASE_URL:
+    # Fallback for local development
+    DATABASE_URL = "sqlite:///./careDock.db"
+    print("Warning: Using SQLite database for development. Set DATABASE_URL environment variable for production.")
+
+engine = create_engine(DATABASE_URL, echo=False)  # Disable echo for production 
 
 
 class User(Base):

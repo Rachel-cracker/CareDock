@@ -18,6 +18,15 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+# Health check endpoint for deployment platforms
+@app.get("/")
+def health_check():
+    return {"status": "healthy", "message": "CareDock API is running"}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 app.include_router(task.router)
 app.include_router(resource.router)
 app.include_router(selfcare.router)
