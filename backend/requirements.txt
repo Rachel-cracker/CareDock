@@ -12,3 +12,4 @@ PyJWT
 python-decouple
 openai>=1.0.0
 mysql-connector-python
+pydantic[email]>=2.0
